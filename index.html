@@ -1,162 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>EXP Drink Calculator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OpMDrinks</title>
   <style>
-    /* General Styles */
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #f4f6f9, #e9eef5);
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 2rem;
-      min-height: 100vh;
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:"Segoe UI",system-ui,-apple-system,"Roboto","Helvetica Neue",Arial;
+      background:radial-gradient(ellipse at 10% 10%,rgba(170,120,255,0.06),transparent 8%),
+                 linear-gradient(180deg,#08000b 0%, #13001a 40%, #180026 100%);
+      color:#e9e7f7;min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;gap:1.5rem;padding:2rem
     }
-
-    h1 {
-      text-align: center;
-      color: #222;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Calculator Card */
-    .calculator {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      max-width: 420px;
-      width: 100%;
-      transition: transform 0.2s ease;
-    }
-    .calculator:hover {
-      transform: translateY(-4px);
-    }
-
-    /* Inputs & Labels */
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.4rem;
-      margin-top: 1rem;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-    }
-
-    input:focus, select:focus {
-      border-color: #007bff;
-      outline: none;
-    }
-
-    /* Button */
-    button {
-      width: 100%;
-      padding: 0.85rem;
-      margin-top: 1.5rem;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-      background: #007bff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-
-    /* Results */
-    .result {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      border-radius: 8px;
-      background: #f8faff;
-      border-left: 4px solid #007bff;
-      font-size: 1.05rem;
-      font-weight: 500;
-      line-height: 1.6;
-    }
+    .nav{width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.75rem}
+    .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#b27bff,#6a0dad);
+      box-shadow:0 6px 18px rgba(106,13,173,0.25),inset 0 -6px 18px rgba(255,255,255,0.05);
+      display:flex;align-items:center;justify-content:center;font-weight:700}
+    .site-title{font-weight:700;letter-spacing:.6px;color:#f6f3ff}
+    .tabs{display:flex;gap:.5rem;align-items:center}
+    .tab{padding:.5rem .9rem;border-radius:12px;font-weight:600;color:#bfb2ff;background:transparent;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.03);transition:.18s;display:flex;align-items:center;gap:.5rem}
+    .tab:hover{transform:translateY(-3px);color:#fff;box-shadow:0 6px 20px rgba(105,36,255,0.08)}
+    .tab.active{background:linear-gradient(90deg,#a259ff,#6a0dad);color:#fff;box-shadow:0 10px 30px rgba(106,13,173,0.18)}
+    .dot{width:10px;height:10px;border-radius:50%;background:#2ed573;box-shadow:0 0 8px rgba(46,213,115,0.5);display:inline-block}
+    .overlay{position:fixed;inset:0;background:rgba(6,1,10,0.86);backdrop-filter:blur(10px);display:flex;align-items:center;
+      justify-content:center;z-index:999;padding:2rem;transition:opacity .35s}
+    .gate{width:min(920px,96%);border-radius:14px;padding:36px;text-align:center;background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(106,13,173,0.06)}
+    .gate h1{font-size:28px;margin-bottom:8px;background:linear-gradient(90deg,#c471f5,#fa71cd);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .gate .enter-btn{padding:.8rem 1.6rem;border-radius:10px;font-weight:700;background:linear-gradient(90deg,#a259ff,#6a0dad);
+      border:none;color:white;cursor:pointer;box-shadow:0 8px 24px rgba(106,13,173,0.18)}
+    .container{width:100%;max-width:1100px;padding:1.25rem;border-radius:14px;background:rgba(18,4,26,0.56);
+      border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(8px);box-shadow:0 10px 40px rgba(0,0,0,0.6);min-height:420px}
+    .content{display:block;width:100%}.hidden{display:none}
+    .card{background:rgba(255,255,255,0.02);padding:18px;border-radius:12px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.03)}
+    .form-row{display:flex;gap:10px;margin-top:10px}
+    .form-row input,.form-row select{flex:1;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);
+      background:transparent;color:#efe9ff}
+    label{font-size:.9rem;color:#ddd;margin-bottom:6px;display:block}
+    .calc-btn{margin-top:12px;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,#48d8a4,#2ed573);
+      color:#021009;font-weight:700;cursor:pointer}
+    .result{margin-top:12px;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(46,213,115,0.06),
+      rgba(255,255,255,0.01));border-left:4px solid rgba(46,213,115,0.9);color:#dfffe8;white-space:pre-wrap}
+    footer{max-width:1100px;width:100%;text-align:center;color:#bdb4f7;font-size:.9rem;opacity:.9;margin-top:8px}
   </style>
 </head>
 <body>
-  <div class="calculator">
-    <h1>EXP Drink Calculator</h1>
-
-    <label for="level">Current Level (1–500):</label>
-    <input type="number" id="level" min="1" max="500" value="1">
-
-    <label for="percent">Current EXP % at this level (0–99.99):</label>
-    <input type="number" id="percent" min="0" max="99.99" step="0.01" value="0">
-
-    <label for="exp">Drink Type:</label>
-    <select id="exp">
-      <option value="500">Super Drink (500 EXP)</option>
-      <option value="2000">Super Melee / Sniper / Sword (2000 EXP)</option>
-      <option value="30">Drink Defense (30 EXP)</option>
-      <option value="120">Drink Melee / Sniper / Sword (120 EXP)</option>
-    </select>
-
-    <button onclick="calculate()">Calculate</button>
-
-    <div class="result" id="result">Enter your details and press calculate.</div>
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="gate">
+      <h1>Welcome</h1>
+      <button class="enter-btn" id="enterBtn">Click here</button>
+    </div>
   </div>
 
+  <!-- Navigation -->
+  <div class="nav">
+    <div class="brand">
+      <div class="logo">O</div>
+      <div>
+        <div class="site-title">OpMDrinks</div>
+        <div style="font-size:.75rem;color:#bfb2ff;opacity:.9;">Neon</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="home">Home</button>
+      <button class="tab" data-tab="reviews">Reviews</button>
+      <button class="tab" data-tab="status">Status</button>
+      <button class="tab" data-tab="expcalc"><span class="dot"></span> EXP Calc</button>
+      <button class="tab" data-tab="support">Support</button>
+      <button class="tab" data-tab="admin">Admin Logins</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="content">
+      <!-- Home -->
+      <section id="home">
+        <h2>Home</h2>
+        <div class="card">Welcome to <strong>OpMDrinks</strong>. Use the EXP Calculator tab to calculate your progress.</div>
+      </section>
+
+      <!-- Reviews -->
+      <section id="reviews" class="hidden">
+        <h2>Reviews</h2>
+        <div class="card"><ul><li>“Nice look!”</li><li>“Calculator is useful.”</li></ul></div>
+      </section>
+
+      <!-- Status -->
+      <section id="status" class="hidden">
+        <h2>Status</h2>
+        <div class="card"><ul><li>Website: Operational ✅</li><li>Support system: Operational ✅</li></ul></div>
+      </section>
+
+      <!-- EXP Calc -->
+      <section id="expcalc" class="hidden">
+        <h2><span class="dot"></span> EXP CALC — Up and running</h2>
+        <div class="card">
+          <label for="level2">Current Level</label>
+          <div class="form-row">
+            <input id="level2" type="number" min="1" max="500" value="1">
+            <input id="percent2" type="number" min="0" max="99.99" step="0.01" value="0">
+          </div>
+          <label for="drink2">Drink EXP Value</label>
+          <select id="drink2" style="margin-top:8px;">
+            <option value="500">Super Drink (500)</option>
+            <option value="2000">Super Melee/Sniper/Sword (2000)</option>
+            <option value="30">Drink Defense (30)</option>
+            <option value="120">Drink Melee/Sniper/Sword (120)</option>
+          </select>
+          <button class="calc-btn" id="calcBtn2">Calculate</button>
+          <div id="calcResult2" class="result" style="display:none;"></div>
+        </div>
+      </section>
+
+      <!-- Support -->
+      <section id="support" class="hidden">
+        <h2>Support</h2>
+        <div class="card">
+          <label>Name</label><input id="sname">
+          <label>Email</label><input id="semail">
+          <label>Subject</label><input id="ssubject">
+          <label>Message</label><textarea id="smessage"></textarea>
+          <button id="submitTicket">Submit</button>
+          <button id="clearTickets">Clear</button>
+          <div id="ticketsList" class="tickets-list"></div>
+        </div>
+      </section>
+
+      <!-- Admin -->
+      <section id="admin" class="hidden">
+        <h2>Admin</h2>
+        <div class="card">
+          <div id="adminNotLogged">
+            <label>Name</label><input id="adminName">
+            <label>Password</label><input id="adminPass" type="password">
+            <button id="adminLogin">Login</button>
+          </div>
+          <div id="adminPanel" style="display:none;">
+            <div class="admin-bar">
+              <div class="small">Signed in as: <strong id="adminUser"></strong></div>
+              <button id="adminLogout">Logout</button>
+            </div>
+            <div id="adminTickets" class="tickets-list"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer>Designed with ❤️ by <strong style="color:#a259ff">Jake</strong></footer>
+
   <script>
-    function getExpForLevel(level) {
-      return 100 + (level * 10);
-    }
-
-    function calculateExp(currentLevel, percentExp) {
-      let totalExpTo500 = 0;
-      for (let lvl = 1; lvl <= 500; lvl++) {
-        totalExpTo500 += getExpForLevel(lvl);
-      }
-
-      let currentExp = 0;
-      for (let lvl = 1; lvl < currentLevel; lvl++) {
-        currentExp += getExpForLevel(lvl);
-      }
-
-      currentExp += (percentExp / 100) * getExpForLevel(currentLevel);
-
-      return Math.round(totalExpTo500 - currentExp);
-    }
-
-    function calculate() {
-      const level = parseInt(document.getElementById('level').value);
-      const percent = parseFloat(document.getElementById('percent').value);
-      const exp = parseInt(document.getElementById('exp').value);
-      const resultBox = document.getElementById('result');
-
-      if (isNaN(level) || isNaN(percent) || isNaN(exp) ||
-          level < 1 || level > 500 || percent < 0 || percent >= 100) {
-        resultBox.innerHTML = "⚠️ Please enter valid values.";
-        resultBox.style.borderLeftColor = "#dc3545";
-        return;
-      }
-
-      const remainingExp = calculateExp(level, percent);
-      const drinks = Math.ceil(remainingExp / exp);
-
-      resultBox.innerHTML = `
-        <strong>EXP Remaining:</strong> ${remainingExp.toLocaleString()} EXP<br>
-        <strong>Drinks Needed:</strong> ${drinks}
-      `;
-      resultBox.style.borderLeftColor = "#007bff";
-    }
+    const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('section');
+    function showTab(tab){panels.forEach(p=>p.classList.add('hidden'));document.getElementById(tab).classList.remove('hidden');
+      tabs.forEach(t=>t.classList.remove('active'));document.querySelector('.tab[data-tab="'+tab+'"]').classList.add('active')}
+    tabs.forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+    document.getElementById('enterBtn').addEventListener('click',()=>{overlay.style.opacity='0';setTimeout(()=>overlay.style.display='none',350)});
+    function getExpForLevel(l){return 100+l*10}
+    function calc(level,percent){let total=0;for(let i=1;i<=500;i++)total+=getExpForLevel(i);
+      let cur=0;for(let i=1;i<level;i++)cur+=getExpForLevel(i);cur+=(percent/100)*getExpForLevel(level);return Math.round(total-cur)}
+    document.getElementById('calcBtn2').onclick=()=>{const l=parseInt(level2.value),p=parseFloat(percent2.value),
+      d=parseInt(drink2.value),r=calc(l,p),dr=Math.ceil(r/d),out=`EXP Remaining: ${r}\nDrinks Needed: ${dr}`;
+      calcResult2.style.display='block';calcResult2.textContent=out}
+    const KEY='tickets';function load(){return JSON.parse(localStorage.getItem(KEY)||'[]')}function save(t){localStorage.setItem(KEY,JSON.stringify(t))}
+    function render(){ticketsList.innerHTML='';load().forEach(t=>{const e=document.createElement('div');e.className='ticket';e.innerHTML=`<div class="meta"><div>${t.subject} — ${t.name}</div></div><div>${t.message}</div>`;ticketsList.appendChild(e)})}
+    submitTicket.onclick=()=>{const t=load();t.push({name:sname.value,email:semail.value,subject:ssubject.value,message:smessage.value});save(t);render()}
+    clearTickets.onclick=()=>{localStorage.removeItem(KEY);render()}
+    render();
+    const ADMIN_NAME="Jake",ADMIN_PASS="Aled";function isAdmin(){return sessionStorage.getItem('admin')}function setAdmin(u){u?sessionStorage.setItem('admin',u):sessionStorage.removeItem('admin');renderAdmin()}
+    function renderAdmin(){const u=isAdmin();adminNotLogged.style.display=u?'none':'block';adminPanel.style.display=u?'block':'none';adminUser.textContent=u||'';if(u){adminTickets.innerHTML='';load().forEach((t,i)=>{const e=document.createElement('div');e.className='ticket';e.innerHTML=`<div>${t.subject} — ${t.name}<br>${t.message}</div>`;adminTickets.appendChild(e)})}}
+    adminLogin.onclick=()=>{if(adminName.value===ADMIN_NAME&&adminPass.value===ADMIN_PASS){setAdmin(adminName.value)}}
+    adminLogout.onclick=()=>setAdmin(null);renderAdmin();
   </script>
 </body>
 </html>
