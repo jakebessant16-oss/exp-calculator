@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EXP Drink Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Reset + Body */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2em;
+            min-height: 100vh;
+        }
+
+        /* Overlay */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+
+        #overlay h1 {
+            font-size: 2em;
+            margin-bottom: 1em;
+        }
+
+        #overlay p {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 2em;
+        }
+
+        #overlay button {
+            padding: 0.8em 2em;
+            font-size: 1em;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #overlay button:hover {
+            background: #0056b3;
+        }
+
+        /* Main Calculator */
+        h1 {
+            color: #444;
+            margin-bottom: 1em;
+        }
+        .calculator {
+            background: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin: 1em 0 0.5em;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 0.6em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        .calculator button {
+            background: #007bff;
+            color: white;
+            margin-top: 1.5em;
+            cursor: pointer;
+        }
+        .calculator button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay -->
+    <div id="overlay">
+        <h1>Click to Start</h1>
+        <p>Made by Jake – Discord: <strong>jakexzfr</strong><br>DM for questions</p>
+        <button onclick="startSite()">Enter</button>
+    </div>
+
+    <!-- Main Content -->
+    <h1>EXP Drink Calculator</h1>
+    <div class="calculator">
+        <label for="level">Current Level (1-500):</label>
+        <input type="number" id="level" min="1" max="500" value="1">
+
+        <label for="percent">Current % EXP at this level (0-99.99):</label>
+        <input type="number" id="percent" min="0" max="99.99" step="0.01" value="0">
+
+        <label for="exp">Drink EXP Value:</label>
+        <select id="exp">
+            <option value="500">Super Drink (500 EXP)</option>
+            <option value="2000">Super Melee/Sniper/Sword (2000 EXP)</option>
+            <option value="30">Drink Defense (30 EXP)</option>
+            <option value="120">Drink Melee/Sniper/Sword (120 EXP)</option>
+        </select>
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // EXP Calculator Logic
+        function getExpForLevel(level) {
+            return 100 + (level * 10);
+        }
+
+        function calculateExp(currentLevel, percentExp) {
+            let totalExpTo500 = 0;
+            for (let lvl = 1; lvl <= 500; lvl++) {
+                totalExpTo500 += getExpForLevel(lvl);
+            }
+
+            let currentExp = 0;
+            for (let lvl = 1; lvl < currentLevel; lvl++) {
+                currentExp += getExpForLevel(lvl);
+            }
+
+            currentExp += (percentExp / 100) * getExpForLevel(currentLevel);
+
+            const expRemaining = totalExpTo500 - currentExp;
+            return Math.round(expRemaining);
+        }
+
+        function calculate() {
+            const level = parseInt(document.getElementById('level').value);
+            const percent = parseFloat(document.getElementById('percent').value);
+            const exp = parseInt(document.getElementById('exp').value);
+
+            if (level < 1 || level > 500 || percent < 0 || percent >= 100) {
+                alert("Please enter valid values.");
+                return;
+            }
+
+            const remainingExp = calculateExp(level, percent);
+            const drinks = Math.ceil(remainingExp / exp);
+
+            document.getElementById('result').innerText = 
+                `EXP Remaining: ${remainingExp.toLocaleString()} EXP\nDrinks Needed: ${drinks}`;
+        }
+
+        // Overlay Logic
+        function startSite() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 800);
+        }
+    </script>
+
+</body>
+</html>
